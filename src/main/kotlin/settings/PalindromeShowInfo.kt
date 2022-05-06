@@ -21,6 +21,6 @@ class PalindromeShowInfo : GameShowInformationInterface {
     }
 
     override fun showUserRating(userName: String, rating: Int) {
-        println("игрок: $userName - рейтиг $rating")
+        println("игрок: $userName - рейтинг $rating")
     }
 }
