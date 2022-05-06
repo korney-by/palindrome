@@ -1,6 +1,6 @@
 package repository
 
-import intefaces.HistoryRepositoryInterface
+import core.intefaces.HistoryRepositoryInterface
 
 object HistoryRepository : HistoryRepositoryInterface {
     private val phraseMap = mutableSetOf<String>()
@@ -14,5 +14,4 @@ object HistoryRepository : HistoryRepositoryInterface {
 
     private fun getSentence(userName: String, phrase: String): String =
         "$userName|${phrase.filter { it != ' ' }.lowercase()}"
-
 }

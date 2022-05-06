@@ -1,12 +1,12 @@
 package settings
 
-import entity.CommandHelp
+import core.intefaces.GameShowInformationInterface
+import entity.CommandDescription
 import entity.UserRating
-import intefaces.GameShowInformationInterface
 
 class PalindromeShowInfo : GameShowInformationInterface {
 
-    override fun showHelp(help: List<CommandHelp>) {
+    override fun showHelp(help: List<CommandDescription>) {
         val result = StringBuffer()
         help.forEach { result.append("${it.command}-${it.description}, ") }
         println("[Команды: $result]")
@@ -15,9 +15,12 @@ class PalindromeShowInfo : GameShowInformationInterface {
     override fun showTop(topList: List<UserRating>) {
         val result = StringBuffer()
         topList.forEachIndexed { index, user ->
-            result.append(" ${index+1}. ${user.userName} - рейтинг ${user.rating}\n")
+            result.append(" ${index + 1}. ${user.userName} - рейтинг ${user.rating}\n")
         }
-        println("[ Доска лидеров ]\n$result")
+        println("\n[ Доска лидеров ]\n$result")
     }
 
+    override fun showUserRating(userName: String, rating: Int) {
+        println("игрок: $userName - рейтинг $rating")
+    }
 }

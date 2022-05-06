@@ -1,4 +1,4 @@
-package intefaces
+package core.intefaces
 
 interface GameCallbackInterface {
     fun onStart(gameName: String)

@@ -1,8 +1,8 @@
 package settings
 
-import intefaces.GamePropertiesInterface
-import intefaces.HistoryRepositoryInterface
-import intefaces.RatingRepositoryInterface
+import core.intefaces.GamePropertiesInterface
+import core.intefaces.HistoryRepositoryInterface
+import core.intefaces.RatingRepositoryInterface
 
 class PalindromeProperties(
     override val gameName: String,
@@ -22,5 +22,4 @@ class PalindromeProperties(
 
     override fun ratingCalculator(phrase: String): Int =
         phrase.filter { it != ' ' }.length
-
 }

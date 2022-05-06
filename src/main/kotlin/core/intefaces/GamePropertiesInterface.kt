@@ -1,7 +1,7 @@
-package intefaces
+package core.intefaces
 
 interface GamePropertiesInterface {
-    val gameName:String
+    val gameName: String
     val ratingRepository: RatingRepositoryInterface
     val historyRepository: HistoryRepositoryInterface
 

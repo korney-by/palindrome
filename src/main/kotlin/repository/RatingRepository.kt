@@ -1,11 +1,11 @@
 package repository
 
+import core.intefaces.RatingRepositoryInterface
 import entity.UserRating
-import intefaces.RatingRepositoryInterface
-import java.util.*
+import java.util.TreeSet
 
 object RatingRepository : RatingRepositoryInterface {
-    private const val TOP_COUNT = 5
+    override var topCount: Int = 3
     private val ratingMap = mutableMapOf<String, Int>()
     private val topList = TreeSet<User>()
 
@@ -26,31 +26,33 @@ object RatingRepository : RatingRepositoryInterface {
         }
 
     override fun addRating(userName: String, rating: Int) {
+        delFromTopList(userName)
         val newRating = rating + getUserRating(userName)
         ratingMap[userName] = newRating
-        toTopList(userName)
+        addToTopList(userName)
     }
 
+    private fun delFromTopList(userName: String) {
+        topList.remove(User(userName))
+    }
 
-    private fun toTopList(userName: String) {
-        if (topList.size < TOP_COUNT) {
-            if (!topList.contains(User(userName))) topList.add(User(userName))
-        } else {
-            val lastUser = topList.last()
-            if (getUserRating(lastUser.userName) < getUserRating(userName)) {
-                topList.remove(lastUser)
-                topList.add(User(userName))
-            }
+    private fun addToTopList(userName: String) {
+        topList.add(User(userName))
+        if (topList.size > topCount) {
+            topList.remove(topList.last())
         }
     }
 
-    private fun getUserRating(userName: String): Int =
+    override fun getUserRating(userName: String): Int =
         ratingMap[userName] ?: 0
 
-
     data class User(val userName: String) : Comparable<User> {
-        override fun compareTo(other: User): Int =
-            getUserRating(other.userName)-getUserRating(this.userName)
-    }
 
+        override fun compareTo(other: User): Int {
+            val result = getUserRating(other.userName) - getUserRating(this.userName)
+            return if (result == 0) {
+                this.userName.compareTo(other.userName)
+            } else result
+        }
+    }
 }

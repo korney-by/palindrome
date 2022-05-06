@@ -1,7 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 
 plugins {
     kotlin("jvm") version "1.6.10"
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     application
 }
 
@@ -12,8 +14,13 @@ repositories {
     mavenCentral()
 }
 
+subprojects {
+    apply<KtlintPlugin>()
+}
 dependencies {
     testImplementation(kotlin("test"))
+
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }
 
 tasks.test {
