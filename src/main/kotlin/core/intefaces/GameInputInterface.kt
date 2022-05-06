@@ -1,4 +1,4 @@
-package intefaces
+package core.intefaces
 
 interface GameInputInterface {
     fun promptInput(currentUserName: String): String

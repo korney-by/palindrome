@@ -1,5 +1,11 @@
-import entity.UserRating
-import intefaces.*
+package core
+
+import core.intefaces.GameCallbackInterface
+import core.intefaces.GameInputInterface
+import core.intefaces.GamePropertiesInterface
+import core.intefaces.GameShowInformationInterface
+import core.intefaces.HistoryRepositoryInterface
+import core.intefaces.RatingRepositoryInterface
 
 class GameCore(
     private val properties: GamePropertiesInterface,
@@ -22,18 +28,19 @@ class GameCore(
     private val onCurrentUserChanged: ((userName: String) -> Unit) = callbacks::onCurrentUserChanged
     private val onLeaderChanged: ((userName: String, rating: Int) -> Unit) = callbacks::onLeaderChanged
 
-    private val commands = Commands()
-
-    init {
-        commands.apply {
-            assignCommand("/?", "Помощь", ::showHelp)
-            assignCommand("/u", "Сменить пользователя", ::changeUser)
-            assignCommand("/t", "Показать TOP-5", ::showTop)
-            assignCommand("/e", "Выход", ::exit)
+    private val control = Control().apply {
+        Control.Command.values().forEach { command ->
+            when (command) {
+                Control.Command.HELP -> assignCommand(command.value, ::showHelp)
+                Control.Command.RATING -> assignCommand(command.value, ::showUserRating)
+                Control.Command.TOP -> assignCommand(command.value, ::showTop)
+                Control.Command.USER -> assignCommand(command.value, ::changeUser)
+                Control.Command.EXIT -> assignCommand(command.value, ::exit)
+            }
         }
     }
 
-    var currentUser: String? = null
+    private var currentUser: String? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -41,11 +48,13 @@ class GameCore(
             }
         }
 
-    private var leader: UserRating? = null
+    private var leader: String? = null
         set(value) {
-            if (field != value) {
-                field = value
-                value?.let { onLeaderChanged(it.userName, it.rating) }
+            field = value
+            value?.let { leaderName ->
+                ratingRepo.leader?.rating?.let { rating ->
+                    onLeaderChanged(leaderName, rating)
+                }
             }
         }
 
@@ -62,15 +71,18 @@ class GameCore(
                     historyRepo.addPhrase(it, phrase)
                     onPhraseAccepted(phrase, rating)
                 }
-                if (ratingRepo.leader != leader) {
-                    leader = ratingRepo.leader
+                if (ratingRepo.leader?.userName != leader) {
+                    leader = ratingRepo.leader?.userName
                 }
             }
         }
     }
 
     private fun changeUser() {
-        currentUser = input.promptInputUser()
+        input.promptInputUser().apply {
+            currentUser = this
+            ratingRepo.addRating(this, 0)
+        }
     }
 
     private fun exit() {
@@ -78,11 +90,17 @@ class GameCore(
     }
 
     private fun showHelp() {
-        showInfo.showHelp(commands.getHelpList())
+        showInfo.showHelp(control.getHelpList())
     }
 
     private fun showTop() {
         showInfo.showTop(ratingRepo.getTopList())
+    }
+
+    private fun showUserRating() {
+        currentUser?.let {
+            showInfo.showUserRating(it, ratingRepo.getUserRating(it))
+        }
     }
 
     fun start() {
@@ -93,11 +111,10 @@ class GameCore(
         while (!isExit) {
             currentUser?.let { user ->
                 val inputStr = input.promptInput(user)
-                if (Commands.isCommand(inputStr)) {
-                    commands.run(inputStr)
+                if (Control.isCommand(inputStr)) {
+                    control.run(inputStr)
                 } else checkPhrase(inputStr)
             }
         }
     }
 }
-

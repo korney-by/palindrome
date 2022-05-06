@@ -1,6 +1,6 @@
 package settings
 
-import intefaces.GameCallbackInterface
+import core.intefaces.GameCallbackInterface
 
 class PalindromeCallbacks : GameCallbackInterface {
 
@@ -13,7 +13,7 @@ class PalindromeCallbacks : GameCallbackInterface {
     }
 
     override fun onPhraseNotCorrespond(phrase: String) {
-        println("\"$phrase\" не полиндром!")
+        println("\"$phrase\" не палиндром!")
     }
 
     override fun onLeaderChanged(userName: String, rating: Int) {
@@ -21,10 +21,10 @@ class PalindromeCallbacks : GameCallbackInterface {
     }
 
     override fun onCurrentUserChanged(userName: String) {
-        println("Теперь играет $userName")
+        println("Теперь играет $userName, введите палиндром после знака \">\"")
     }
 
     override fun onPhraseAccepted(phrase: String, rating: Int) {
-        println("за \"$phrase\" начислено $rating баллов")
+        println("за \"$phrase\" начислено $rating очк.")
     }
 }

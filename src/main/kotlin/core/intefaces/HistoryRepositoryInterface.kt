@@ -1,4 +1,4 @@
-package intefaces
+package core.intefaces
 
 interface HistoryRepositoryInterface {
     fun addPhrase(userName: String, phrase: String)
